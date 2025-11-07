@@ -1,60 +1,44 @@
-// config/db.config.js
 const { Sequelize } = require("sequelize");
 require("dotenv").config();
 
-//Prod Connection Tag_upload_music
-// const sequelize = new Sequelize(
-//   process.env.TAGTALK_DB,
-//   process.env.TAGTALK_USERNAME,
-//   process.env.TAGTALK_PASSWORD,
-//   {
-//     host: process.env.TAGTALK_HOST,
-//     dialect: "mysql",
-//     port: 3306,
-//   }
-// );
-
-//Localhost Databse Connection
+// ✅ Create a new Sequelize instance for MySQL
 const sequelize = new Sequelize(
-  process.env.DEFI_KINGDOM_DB,
-  process.env.DEFI_KINGDOM_USERNAME,
-  process.env.DEFI_KINGDOM_PASSWORD,
+  process.env.DB_NAME, // database name
+  process.env.DB_USER, // username
+  process.env.DB_PASS, // password
   {
-    host: process.env.DEFI_KINGDOM_HOST,
+    host: process.env.DB_HOST,
     dialect: "mysql",
     port: 3306,
+    logging: false, // disable SQL logs (optional)
     dialectOptions: {
-      connectTimeout: 20000 // Connection timeout in milliseconds (20 seconds)
+      connectTimeout: 20000, // 20 seconds connection timeout
     },
     pool: {
-      max: 10, // Maximum number of connections in the pool
-      min: 0, // Minimum number of connections in the pool
-      acquire: 30000, // Maximum time in milliseconds that a connection can be acquired
-      idle: 10000 // Maximum time in milliseconds that a connection can be idle before being released
-    }
+      max: 10,
+      min: 0,
+      acquire: 30000,
+      idle: 10000,
+    },
   }
 );
 
-
-// Test the database connection
+// ✅ Test database connection
 sequelize
   .authenticate()
-  .then(() => {
-    console.log("Database connection has been established successfully.");
-  })
-.catch((err) => {
-    console.error("Unable to connect to the database:", err);
-});
+  .then(() => console.log("✅ MySQL connected successfully."))
+  .catch((err) => console.error("❌ Unable to connect to MySQL:", err.message));
 
-
+// ✅ Export Sequelize instance
 const db = {};
-
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-//All Model File Import 
-db.roles = require("../models/role")(sequelize,Sequelize);
-db.users = require("../models/user")(sequelize,Sequelize);
-db.brand = require("../models/brand")(sequelize,Sequelize);
+// ⚙️ Import models here (you’ll add them later)
+db.Role = require("../models/Maintenance")(sequelize, Sequelize);
+db.User = require("../models/User")(sequelize, Sequelize);
+db.Society = require("../models/Society")(sequelize, Sequelize);
+db.Attendance = require("../models/Attendance")(sequelize, Sequelize);
+db.VisitorLog = require("../models/VisitorLog")(sequelize, Sequelize);
 
 module.exports = db;
