@@ -1,36 +1,34 @@
-const { toDefaultValue } = require("sequelize/lib/utils");
+const { DataTypes } = require("sequelize");
 
-//models/role.js
-module.exports = (sequelize , DataTypes) => {
-    const User = sequelize.define('user', {
+module.exports = (sequelize) => {
+  return sequelize.define(
+    "User",
+    {
       id: {
-        type: DataTypes.INTEGER(11),
-        allowNull: false,
+        type: DataTypes.INTEGER.UNSIGNED,
+        autoIncrement: true,
         primaryKey: true,
-        autoIncrement: true
       },
-      name:{
-          type: DataTypes.STRING
+      name: { type: DataTypes.STRING, allowNull: false },
+      email: { type: DataTypes.STRING, allowNull: false, unique: true },
+      password: { type: DataTypes.STRING, allowNull: false },
+      role: {
+        type: DataTypes.ENUM(
+          "superadmin",
+          "societyadmin",
+          "societyuser",
+          "watchman"
+        ),
+        allowNull: false,
+        defaultValue: "societyuser",
       },
-      type:{
-        type: DataTypes.STRING
-      },
-      email_id:{
-        type: DataTypes.STRING
-      },
-      phone:{
-        type: DataTypes.STRING
-      },
-      password:{
-        type: DataTypes.STRING
-      },
-      is_active:{
-        type:DataTypes.STRING,
-        defaultValue : 0
-      }
-    },{
+      flatNumber: { type: DataTypes.STRING },
+      phone: { type: DataTypes.STRING },
+      societyId: { type: DataTypes.INTEGER, allowNull: true },
+    },
+    {
+      tableName: "users",
       timestamps: true,
-      underscored: true
-    });
-    return User;
-}
+    }
+  );
+};
